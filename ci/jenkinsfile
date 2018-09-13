@@ -1,0 +1,67 @@
+#!groovy
+
+node("linux && ansible") {
+    def lastCommitBy = sh(returnStdout: true, script: 'git log -1 --pretty=format:"%ce"').trim()
+    def jdkHome
+    def mvnHome
+    def target_repo_name = "maven-release"
+    def develop = "remotes/origin/develop"
+    def healthCheckHost
+    def kdbDestinationName
+    def testUser
+    def testBotUser
+    def branch = scm.branches[0].name
+    def jobName = "${env.JOB_NAME}"
+    def buildNumber = "${env.BUILD_NUMBER}"
+    def deployArtifacts = true
+    def emailRecipients = "${lastCommitBy}"
+    def mvnScript
+    def buildResourceLockName
+
+    jdkHome = installTool "jdk1.8.0_91"
+    mvnHome = installTool "apache-maven-3.3.9"
+
+    stage('Build') {
+            echo "Branch is ${branch}"
+            echo "Job name = ${jobName}"
+            echo "Build number = ${buildNumber}"
+            echo "MAVEN_HOME=${mvnHome}"
+            withEnv(["JAVA_HOME=${jdkHome}", "MAVEN_HOME=${mvnHome}", "PATH+MAVEN=${mvnHome}/bin"]) {
+                if (branch == develop) {
+                    mvnScript = "clean install -U -Drelease -e --batch-mode -Dbuild.jobName=${jobName} -Dbuild.number=${buildNumber} -Dbuild.branch=${branch}"
+                } else {
+                    mvnScript = "clean install -Dbuild.jobName=${jobName} -Dbuild.number=${buildNumber} -Dbuild.branch=${branch}"
+                    deployArtifacts = false
+                }
+                echo "Running: " + mvnScript
+                try {
+                    sshAsVxPipeline {
+                        sh mvnScript
+                    }
+
+                } catch (err) {
+                    echo "Caught: ${err}"
+                    currentBuild.result = 'FAILURE'
+                    if (branch == develop) {
+                        step([$class: 'Mailer', recipients: "${emailRecipients}"])
+                    }
+                    throw err
+                }
+            }
+    }
+
+//    stage('Sonar Analysis') {
+//        withEnv(["JAVA_HOME=${jdkHome}", "MAVEN_HOME=${mvnHome}", "PATH+MAVEN=${mvnHome}/bin"]) {
+//            sonarQube {
+//                code_exclusions = "**/*Test.java,**/*Mock*.java,**/public/**.js"
+//                code_sources = "web-app/src/"
+//                project_name = "Nextgen S2BX"
+//                binary_location = "web-app/target/"
+//                junit_report_paths = "web-app/target/surefire-reports/"
+//                jacoco_report_paths = "web-app/target/jacoco.exec"
+//            }
+//        }
+//    }
+
+}
+
