@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
+import java.text.DecimalFormat;
+
 @Component
 public class UiPublisher implements Publishable {
 
@@ -13,13 +15,19 @@ public class UiPublisher implements Publishable {
 
     public UiPublisher(JmsTemplate jmsTemplate) {
         this.jmsTemplate = jmsTemplate;
+        this.jmsTemplate.setPubSubDomain(true);
     }
 
     @Override
-    public void next(int price) {
+    public void next(double price) {
         String destination = "prices";
 
-        log.info("Publishing JMS message to destination: {}, payload: {}", destination, price);
-        jmsTemplate.convertAndSend(destination, price);
+        DecimalFormat df = new DecimalFormat("###.####");
+
+        String formattedPrice = df.format(price);
+
+        log.info("Publishing JMS message to destination: {}, payload: {}", destination, formattedPrice);
+
+        jmsTemplate.convertAndSend(destination, formattedPrice);
     }
 }

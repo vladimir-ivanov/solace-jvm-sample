@@ -15,13 +15,9 @@ public class PricesStream {
     private Timer timer = new Timer();
     private TimerTask timerTask;
 
-    public void start(int interval) {
-        timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                log.info("prices coming");
-            }
-        };
+    public void start(int interval, TimerTask timerTask) {
+        this.timerTask = timerTask;
+
         timer.scheduleAtFixedRate(timerTask, 0, interval);
     }
 

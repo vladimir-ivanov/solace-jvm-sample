@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.naming.ConfigurationException;
 
+import java.util.TimerTask;
+import java.util.concurrent.ThreadLocalRandom;
+
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController()
@@ -33,14 +36,20 @@ public class PricesStreamController {
     @RequestMapping(value = "/start/{interval}", method = GET)
     public String start(@PathVariable("interval") final int interval) {
         log.info("Starting prices stream with interval {}", interval);
-        pricesStream.start(interval);
+        pricesStream.start(interval, new TimerTask() {
+            @Override
+            public void run() {
+                log.info("prices coming");
 
-        try {
-            uiPublisher.next(HUNDRED);
+                try {
+                    double random = ThreadLocalRandom.current().nextDouble(10, 11);
+                    uiPublisher.next(random);
 
-        } catch (Exception e) {
-            log.error(e.getMessage());
-        }
+                } catch (Exception e) {
+                    log.error(e.getMessage());
+                }
+            }
+        });
 
         return "started streaming prices with interval: " + interval;
     }

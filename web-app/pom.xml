@@ -30,7 +30,7 @@
             <version>2.0.1</version>
         </dependency>
         <dependency>
-            <groupId>com.scb.symphony</groupId>
+            <groupId>com.scb.s2bx</groupId>
             <artifactId>solace-jms-spring-boot-starter</artifactId>
             <version>DEV-SNAPSHOT</version>
         </dependency>

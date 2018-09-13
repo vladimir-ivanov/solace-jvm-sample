@@ -1,6 +1,6 @@
 solace:
   jms:
-    host: vmr-mr8v6yiwid1f.messaging.solace.cloud:21217
+    host: vmr-mr8v6yiwid1f.messaging.solace.cloud:21216
     clientUsername: solace-cloud-client
     clientPassword: dui6httte9qt6r4jiapn0s2bth
     messageVpn: msgvpn-85s7yc3aep
