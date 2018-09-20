@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.naming.ConfigurationException;
-
 import java.util.TimerTask;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -22,7 +20,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 public class PricesStreamController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-    public static final int HUNDRED = 100;
+    public static final int ORIGIN = 10;
+    public static final int BOUND = 11;
 
     private PricesStream pricesStream;
     private Publishable uiPublisher;
@@ -42,7 +41,7 @@ public class PricesStreamController {
                 log.info("prices coming");
 
                 try {
-                    double random = ThreadLocalRandom.current().nextDouble(10, 11);
+                    double random = ThreadLocalRandom.current().nextDouble(ORIGIN, BOUND);
                     uiPublisher.next(random);
 
                 } catch (Exception e) {

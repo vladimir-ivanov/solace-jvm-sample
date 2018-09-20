@@ -13,10 +13,10 @@ public class Application {
 
         try {
             final JCSMPProperties properties = new JCSMPProperties();
-            properties.setProperty(JCSMPProperties.HOST,"tcp://vmr-mr8v6yiwid1f.messaging.solace.cloud:21216");
-            properties.setProperty(JCSMPProperties.USERNAME,"solace-cloud-client");
-            properties.setProperty(JCSMPProperties.PASSWORD,"dui6httte9qt6r4jiapn0s2bth");
-            properties.setProperty(JCSMPProperties.VPN_NAME,"msgvpn-85s7yc3aep");
+            properties.setProperty(JCSMPProperties.HOST, "tcp://vmr-mr8v6yiwid1f.messaging.solace.cloud:21216");
+            properties.setProperty(JCSMPProperties.USERNAME, "solace-cloud-client");
+            properties.setProperty(JCSMPProperties.PASSWORD, "dui6httte9qt6r4jiapn0s2bth");
+            properties.setProperty(JCSMPProperties.VPN_NAME, "msgvpn-85s7yc3aep");
             final JCSMPSession session = JCSMPFactory.onlyInstance().createSession(properties);
 
             session.connect();
