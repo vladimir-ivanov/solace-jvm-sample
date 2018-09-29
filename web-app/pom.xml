@@ -83,7 +83,7 @@
                 </property>
             </activation>
             <properties>
-                <activeSpringProfile>dev</activeSpringProfile>
+                <!--<activeSpringProfile>dev</activeSpringProfile>-->
                 <project.packaging>jar</project.packaging>
             </properties>
         </profile>

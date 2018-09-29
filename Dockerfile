@@ -17,5 +17,5 @@ ARG JAR_FILE=web-app/target/web-app-DEV-SNAPSHOT.jar
 ADD ${JAR_FILE} solace-jms.jar
 
 # Run the jar file
-ENTRYPOINT ["java","-jar","/solace-jms.jar"]
+ENTRYPOINT ["java","-Dspring.profiles.active=${PROFILE}","-jar","/solace-jms.jar"]
 
