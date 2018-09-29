@@ -1,0 +1,3 @@
+solace:
+  jms:
+    host: prod.messaging.solace.cloud:21216
