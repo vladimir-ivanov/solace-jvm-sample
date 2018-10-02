@@ -1,4 +1,4 @@
-package com.scb.s2bx.nextgen.service.uiSolace;
+package com.scb.s2bx.nextgen.service.solacePubSub;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,12 +8,12 @@ import org.springframework.stereotype.Component;
 import java.text.DecimalFormat;
 
 @Component
-public class UiPublisher implements Publishable {
+public class PricePublisher implements Publishable {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private JmsTemplate jmsTemplate;
 
-    public UiPublisher(JmsTemplate jmsTemplate) {
+    public PricePublisher(JmsTemplate jmsTemplate) {
         this.jmsTemplate = jmsTemplate;
         this.jmsTemplate.setPubSubDomain(true);
     }

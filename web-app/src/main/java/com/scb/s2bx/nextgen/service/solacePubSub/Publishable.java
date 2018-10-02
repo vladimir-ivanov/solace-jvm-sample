@@ -1,4 +1,4 @@
-package com.scb.s2bx.nextgen.service.uiSolace;
+package com.scb.s2bx.nextgen.service.solacePubSub;
 
 public interface Publishable {
 

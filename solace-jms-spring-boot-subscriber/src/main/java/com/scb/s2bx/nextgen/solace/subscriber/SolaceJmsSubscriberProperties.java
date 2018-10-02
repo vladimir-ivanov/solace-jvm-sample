@@ -1,9 +1,9 @@
-package com.scb.s2bx.nextgen.solace;
+package com.scb.s2bx.nextgen.solace.subscriber;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties("solace.jms")
-public class SolaceJmsProperties {
+public class SolaceJmsSubscriberProperties {
     public String getHost() {
         return host;
     }

@@ -25,8 +25,9 @@
     </properties>
 
     <modules>
-        <module>solace-jms-spring-boot-starter</module>
         <module>web-app</module>
+        <module>solace-jms-spring-boot-publisher</module>
+        <module>solace-jms-spring-boot-subscriber</module>
     </modules>
 
     <build>

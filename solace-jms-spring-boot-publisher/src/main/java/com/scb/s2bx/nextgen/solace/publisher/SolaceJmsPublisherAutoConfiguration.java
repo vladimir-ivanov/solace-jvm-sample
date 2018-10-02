@@ -1,9 +1,11 @@
-package com.scb.s2bx.nextgen.solace;
+package com.scb.s2bx.nextgen.solace.publisher;
 
 import com.solacesystems.jms.SolConnectionFactory;
 import com.solacesystems.jms.SolJmsUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -11,6 +13,8 @@ import org.springframework.boot.autoconfigure.jms.JmsAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.jms.core.JmsTemplate;
 
 import javax.jms.ConnectionFactory;
 
@@ -18,13 +22,17 @@ import javax.jms.ConnectionFactory;
 @AutoConfigureBefore({JmsAutoConfiguration.class})
 @ConditionalOnClass({ConnectionFactory.class, SolConnectionFactory.class})
 @ConditionalOnMissingBean({ConnectionFactory.class})
-@EnableConfigurationProperties({SolaceJmsProperties.class})
-public class SolaceJmsAutoConfiguration {
+@EnableConfigurationProperties({SolaceJmsPublisherProperties.class})
+public class SolaceJmsPublisherAutoConfiguration {
 
-    private static final Logger logger = LoggerFactory.getLogger(SolaceJmsAutoConfiguration.class);
+    private static final Logger logger = LoggerFactory.getLogger(SolaceJmsPublisherAutoConfiguration.class);
+
+    @Autowired
+    private SolaceJmsPublisherProperties properties;
 
     @Bean
-    public SolConnectionFactory solaceConnectionFactory(SolaceJmsProperties properties) {
+    @Primary
+    public SolConnectionFactory solacePublisherConnectionFactory() {
         try {
             SolConnectionFactory connectionFactory = SolJmsUtility.createConnectionFactory();
 
@@ -33,18 +41,20 @@ public class SolaceJmsAutoConfiguration {
             connectionFactory.setPassword(properties.getClientPassword());
             connectionFactory.setVPN(properties.getMessageVpn());
 
-            logger.info("connecting to solace on host {}", properties.getHost());
-//
-//            Connection connection = connectionFactory.createConnection();
-//            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-//
-//            logger.debug("Connection established to " + session.toString());
+            logger.info("[publish]: connecting to solace on host {}", properties.getHost());
 
             return connectionFactory;
 
         } catch (Exception e) {
-            throw new SolaceJmsConfigurationException("Error occurred while creating the Solace Connection Factory", e);
+            throw new SolaceJmsPublisherConfigurationException("Error occurred while creating the Solace Connection Factory", e);
         }
+    }
+
+    @Bean
+    public JmsTemplate publisherTemplate() {
+        JmsTemplate jmsTemplate = new JmsTemplate();
+        jmsTemplate.setConnectionFactory(solacePublisherConnectionFactory());
+        return jmsTemplate;
     }
 
 }
