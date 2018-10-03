@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="LOG_DIR" value="logs"/>
+    <property name="LOG_FILE" value="${LOG_DIR}/nextgen"/>
+
+    <springProfile name="!release">
+        <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+        <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>INFO</level>
+            </filter>
+            <encoder>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            </encoder>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="STDOUT"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="release">
+        <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_FILE}.log</file>
+            <filter class="ch.qos.logback.classic.filter.LevelFilter">
+                <level>INFO</level>
+                <onMatch>ACCEPT</onMatch>
+                <onMismatch>NEUTRAL</onMismatch>
+            </filter>
+            <encoder>
+                <pattern>${FILE_LOG_PATTERN}</pattern>
+            </encoder>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_FILE}-%d{yyyyMMdd}-%i.log.gz</fileNamePattern>
+                <MaxHistory>89</MaxHistory>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>100MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+            </rollingPolicy>
+        </appender>
+        <root level="INFO">
+            <appender-ref ref="FILE"/>
+        </root>
+    </springProfile>
+</configuration>
