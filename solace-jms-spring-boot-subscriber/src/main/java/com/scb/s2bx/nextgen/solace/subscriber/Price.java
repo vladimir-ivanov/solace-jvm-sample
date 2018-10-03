@@ -1,4 +1,4 @@
-package com.scb.s2bx.nextgen;
+package com.scb.s2bx.nextgen.solace.subscriber;
 
 public class Price {
 

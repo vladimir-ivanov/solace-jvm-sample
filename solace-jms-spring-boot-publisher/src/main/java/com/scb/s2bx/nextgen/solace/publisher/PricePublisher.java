@@ -1,4 +1,4 @@
-package com.scb.s2bx.nextgen.service.solacePubSub;
+package com.scb.s2bx.nextgen.solace.publisher;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

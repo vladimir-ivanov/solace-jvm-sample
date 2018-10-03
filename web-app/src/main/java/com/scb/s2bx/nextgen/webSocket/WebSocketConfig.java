@@ -1,7 +1,7 @@
 package com.scb.s2bx.nextgen.webSocket;
 
-import com.scb.s2bx.nextgen.service.PricesStreamPublisher;
-import com.scb.s2bx.nextgen.service.solacePubSub.Subscribeable;
+import com.scb.s2bx.nextgen.solace.publisher.PricesStreamPublisher;
+import com.scb.s2bx.nextgen.solace.subscriber.Subscribeable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

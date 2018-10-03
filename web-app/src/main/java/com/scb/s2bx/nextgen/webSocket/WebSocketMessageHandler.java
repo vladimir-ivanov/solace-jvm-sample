@@ -1,27 +1,24 @@
 package com.scb.s2bx.nextgen.webSocket;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.scb.s2bx.nextgen.Price;
-import com.scb.s2bx.nextgen.service.PricesStreamPublisher;
-import com.scb.s2bx.nextgen.service.solacePubSub.Subscribeable;
-import com.solacesystems.jms.SolJmsUtility;
+import com.scb.s2bx.nextgen.solace.publisher.PricesStreamPublisher;
+import com.scb.s2bx.nextgen.solace.subscriber.Price;
+import com.scb.s2bx.nextgen.solace.subscriber.Subscribeable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.adapter.standard.WebSocketToStandardExtensionAdapter;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import java.io.IOException;
 
 public class WebSocketMessageHandler extends TextWebSocketHandler {
 
-    private static final int JMS_PUBLISH_INTERVAL = 1000;
-    private static final int ORIGIN = 10;
-    private static final int BOUND = 11;
+    private static final int JMS_PUBLISH_INTERVAL = 5000;
     private static final String JMS_TOPIC = "prices";
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -36,7 +33,7 @@ public class WebSocketMessageHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        cleanup();
+        cleanup(session);
     }
 
     @Override
@@ -55,7 +52,7 @@ public class WebSocketMessageHandler extends TextWebSocketHandler {
     }
 
     private void subscribe(WebSocketSession session) {
-        priceSubscriber.subscribe(JMS_TOPIC, new MessageListener() {
+        priceSubscriber.subscribe(JMS_TOPIC, session.hashCode(), new MessageListener() {
             @Override
             public void onMessage(Message message) {
                 try {
@@ -65,16 +62,16 @@ public class WebSocketMessageHandler extends TextWebSocketHandler {
 
                         try {
                             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(new Price(((javax.jms.TextMessage) message).getText()))));
+
                         } catch (Exception e) {
                             log.error(e.getMessage());
-                            cleanup();
+                            cleanup(session);
                         }
 
                     } else {
                         log.info("Message received.");
                     }
-                    //  log.info("Message Content:%n%s%n", SolJmsUtility.dumpMessage(message));
-                    // latch.countDown(); // unblock the main thread
+
                 } catch (JMSException ex) {
                     log.info("Error processing incoming message {}", ex.getMessage());
                 }
@@ -86,9 +83,15 @@ public class WebSocketMessageHandler extends TextWebSocketHandler {
         pricesStreamPublisher.start(JMS_PUBLISH_INTERVAL);
     }
 
-    private void cleanup() {
-        priceSubscriber.unsubscribe(JMS_TOPIC);
-        pricesStreamPublisher.cancel();
+    private void cleanup(WebSocketSession session) {
+        try {
+            session.close();
+
+        } catch (IOException e) {
+            log.error("unable to close session {}, reason: {}", session.hashCode(), e.getMessage());
+        }
+
+        priceSubscriber.unsubscribe(JMS_TOPIC, session.hashCode());
     }
 
 }
