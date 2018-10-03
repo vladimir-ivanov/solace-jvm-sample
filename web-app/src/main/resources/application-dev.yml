@@ -1,3 +1,3 @@
 solace:
   jms:
-    host: vmr-mr8v6yiwid1f.messaging.solace.cloud:21216
+    host: 10.193.28.220

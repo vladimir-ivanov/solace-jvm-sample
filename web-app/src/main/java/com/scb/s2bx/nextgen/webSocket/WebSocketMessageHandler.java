@@ -18,7 +18,7 @@ import java.io.IOException;
 
 public class WebSocketMessageHandler extends TextWebSocketHandler {
 
-    private static final int JMS_PUBLISH_INTERVAL = 5000;
+    private static final int JMS_PUBLISH_INTERVAL = 1000;
     private static final String JMS_TOPIC = "prices";
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());

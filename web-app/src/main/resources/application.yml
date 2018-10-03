@@ -1,5 +1,5 @@
 solace:
   jms:
-    clientUsername: solace-cloud-client
-    clientPassword: dui6httte9qt6r4jiapn0s2bth
-    messageVpn: msgvpn-85s7yc3aep
+    clientUsername: webm_gdcw_dev
+    clientPassword: webm_gdcw_dev
+    messageVpn: webm_gdcw_dev
