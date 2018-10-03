@@ -1,6 +1,5 @@
 package com.scb.s2bx.nextgen.solace.publisher;
 
-import com.scb.s2bx.nextgen.solace.publisher.PricePublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

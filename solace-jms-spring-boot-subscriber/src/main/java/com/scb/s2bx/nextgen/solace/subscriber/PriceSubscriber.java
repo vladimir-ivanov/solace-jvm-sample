@@ -6,10 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import javax.jms.*;
-import java.util.ArrayList;
+import javax.jms.MessageListener;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
